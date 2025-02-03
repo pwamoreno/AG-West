@@ -8,7 +8,7 @@ interface LogoImageProps {
 
 export const LogoImage = ({ className }: LogoImageProps) => {
 	return (
-		<Link href='/' className="w-[150px]" style={{width:"150px"}>
+		<Link href='/' className="w-[150px]" style={{width:"150px"}}>
 			<Picture
 				src={logoImage}
 				alt='logo'
