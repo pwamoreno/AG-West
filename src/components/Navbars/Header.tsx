@@ -138,7 +138,7 @@ const Header = () => {
 	return (
 		<header
 			className={`flex slg:flex-col w-full justify-center items-center bg-white z-50 transition drop-shadow-md fixed top-0 ${
-				navbar ? "" : ""
+				navbar ? "" : " "
 			}`}
 		>
 			{/* Desktop */}
