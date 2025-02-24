@@ -184,7 +184,10 @@ const SortedProducts = () => {
 								handleNext={handleNext}
 								handlePrev={handlePrev}
 							>
-								<div className='flex space-x-6 overflow-x-auto scroll-smooth overflow-y-hidden no-scrollbar'>
+								<div
+									ref={sliderRef}
+									className='flex space-x-6 overflow-x-auto scroll-smooth overflow-y-hidden no-scrollbar'
+								>
 									{isLoading ? (
 										<Loader /> // Show loader when data is being fetched
 									) : (

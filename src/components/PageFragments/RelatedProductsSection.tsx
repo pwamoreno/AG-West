@@ -76,7 +76,10 @@ const RelatedProductsSection = ({
 					handleNext={handleNext}
 					handlePrev={handlePrev}
 				>
-					<div className='flex space-x-6 overflow-x-auto scroll-smooth overflow-y-hidden no-scrollbar'>
+					<div
+						ref={sliderRef}
+						className='flex space-x-6 overflow-x-auto scroll-smooth overflow-y-hidden no-scrollbar'
+					>
 						<>
 							{categoryProductsWpIsLoading ? (
 								<Loader />
