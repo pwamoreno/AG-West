@@ -9,13 +9,13 @@ interface LogoImageProps {
 
 export const LogoImage = ({ className }: LogoImageProps) => {
 	return (
-		<Link href='/'>
+		<Link href='/' className="w-[150px]" style={{width:"150px"}}>
 			<Picture
 				src={logoImage}
 				alt='logo'
 				priority
 				loading='lazy'
-				className={`w-[100px] lg:w-[120px] duration-300 hover:scale-105 transition-[.3] hover:animate-pulse ${className}`}
+				className={`!w-[80px] lg:!w-[100px] h-[80px] lg:h-[100px] duration-300 hover:scale-105 transition-[.3] hover:animate-pulse ${className}`}
 			/>
 		</Link>
 	);
