@@ -22,7 +22,7 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const store = configureStore({
+const newStore = configureStore({
 	reducer: persistedReducer,
 	middleware: (getDefaultMiddleware: any) =>
 		getDefaultMiddleware({
@@ -34,6 +34,6 @@ const store = configureStore({
 	devTools: process.env.NODE_ENV !== "production",
 });
 
-export const persistor = persistStore(store);
-export default store;
-export type AppDispatch = typeof store.dispatch;
+export const persistor = persistStore(newStore);
+export default newStore;
+export type AppDispatch = typeof newStore.dispatch;

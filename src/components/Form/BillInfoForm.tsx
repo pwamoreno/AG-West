@@ -494,11 +494,13 @@ const BillInfoForm = () => {
 							</h5>
 							<div className='flex justify-between items-center text-sm sm:text-base font-[400] pb-4'>
 								<h4>Subtotal</h4>
-								<h4>{FormatMoney2(calculateSubtotal())}</h4>
+								<h4>
+									<FormatMoney2 value={calculateSubtotal()} />
+								</h4>
 							</div>
 							<div className='flex justify-between items-center text-sm sm:text-base font-[400] mt-3 pb-4 border border-secondary-700 border-t-0 border-r-0 border-l-0'>
 								<h4>Discounted Amount</h4>
-								<h4>{discount ? FormatMoney2(discount) : 0}</h4>
+								<h4>{discount ? <FormatMoney2 value={discount} /> : 0}</h4>
 							</div>
 							<div className='flex justify-between items-center mt-3 pb-4'>
 								<h4 className='text-sm sm:text-base font-bold text-secondary-400'>

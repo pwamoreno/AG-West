@@ -49,11 +49,9 @@ const page = async ({ params: { id } }: ProductIdProps) => {
 	const formatedId = lastPart?.match(/-(\w+)$/)?.[1];
 
 	return (
-		<AppLayout>
-			<main className='mt-40 slg:mt-44 mx-auto max-w-[1156px] min-h-[50vh]'>
-				<Back />
-				<ProductDisplaySection FormatedId={formatedId} />
-			</main>
+		<AppLayout className='pt-40 slg:pt-44 mx-auto max-w-[1156px]'>
+			<Back />
+			<ProductDisplaySection FormatedId={formatedId} />
 		</AppLayout>
 	);
 };

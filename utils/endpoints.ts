@@ -86,3 +86,11 @@ export const WooCommerceServer = axios.create({
 		password: WC_consumerSecret, // Use environment variables
 	},
 });
+
+export async function fetchExchangeRate(from: string, to: string) {
+	const res = await fetch(
+		`${Encryption_Checkout_Url}/Payment/get-exchange-rate?baseCurrencyCode=${from}&destinationCurrencyCode=${to}`,
+	);
+	const data = await res.json();
+	return data.rate;
+}

@@ -88,7 +88,7 @@ const ProductTable = () => {
 										</span>
 									</div>
 									<span className='w-1/6 text-sm sm:text-base'>
-										{FormatMoney2(product?.price)}
+										<FormatMoney2 value={product?.price} />
 									</span>
 									<div className='w-1/6 flex items-center gap-2'>
 										<AiOutlineMinusCircle
@@ -104,7 +104,7 @@ const ProductTable = () => {
 										/>
 									</div>
 									<span className='w-1/6 text-sm sm:text-lg font-semibold text-primary'>
-										{FormatMoney2(calculateSubtotal(product))}
+										<FormatMoney2 value={calculateSubtotal(product)} />
 									</span>
 									<span className='w-[8%]'>
 										<BsTrash

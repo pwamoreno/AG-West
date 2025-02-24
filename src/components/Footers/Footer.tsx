@@ -175,7 +175,7 @@ const Footer = () => {
 				<section className='flex flex-col justify-between gap-1 sm:gap-6 mt-2 px-2 xs:px-6 sm:px-10'>
 					<div className='flex w-full justify-between items-end gap-4'>
 						<div className=''>
-							<LogoImage className='rounded-sm' />
+							<LogoImage className='w-[100px] lg:w-[120px]' />
 							<span className='text-secondary-300 text-xs sm:text-base leading-[1.6] font-[400]'>
 								..The best store for you!
 							</span>

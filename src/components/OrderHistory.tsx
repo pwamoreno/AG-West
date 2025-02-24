@@ -40,7 +40,7 @@ const OrderHistory = ({
 				</span>
 			</td>
 
-			<td className='px-5 py-3 leading-6 text-center whitespace-nowrap'>
+			<td className='px-5 py-3 leading-6 text-center whitespace-nowrap '>
 				<span className='text-sm'>{paymentMethod}</span>
 			</td>
 
@@ -48,8 +48,8 @@ const OrderHistory = ({
 				{status && <span className={`${statusStyles[status]}`}>{status}</span>}
 			</td>
 
-			<td className='px-5 py-3 leading-6 text-center whitespace-nowrap'>
-				<span className='text-sm'>{FormatMoney2(total)}</span>
+			<td className='px-5 py-3 leading-6 text-center whitespace-nowrap text-sm'>
+				<FormatMoney2 value={total} />
 			</td>
 		</>
 	);

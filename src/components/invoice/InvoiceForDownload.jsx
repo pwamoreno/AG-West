@@ -10,6 +10,7 @@ import {
 } from "@react-pdf/renderer";
 import { LogoImage } from "@utils/function";
 import dayjs from "dayjs";
+import { FormatMoney2 } from "../Reusables/FormatMoney";
 
 Font.register({
 	family: "Open Sans",
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
 		lineHeight: 1.5,
 	},
 	table: {
-		display: "table",
+		display: "flex",
 		width: "auto",
 		color: "#4b5563",
 		marginRight: 10,
@@ -358,8 +359,7 @@ const InvoiceForDownload = (data) => {
 								<View style={styles.tableCol}>
 									<Text style={styles.tableCell}>
 										<Text style={styles.quantity}>
-											{"₦"}
-											{parseFloat(item.price).toFixed(2)}
+											<FormatMoney2 value={Number(item.price)} />
 										</Text>
 									</Text>
 								</View>
@@ -367,8 +367,7 @@ const InvoiceForDownload = (data) => {
 								<View style={styles.tableCol}>
 									<Text style={styles.tableCell}>
 										<Text style={styles.amount}>
-											{"₦"}
-											{parseFloat(item.itemTotal).toFixed(2)}
+											<FormatMoney2 value={Number(item.itemTotal)} />
 										</Text>
 									</Text>
 								</View>
@@ -385,8 +384,7 @@ const InvoiceForDownload = (data) => {
 						<View>
 							<Text style={styles.title}>Total Amount</Text>
 							<Text style={styles.amount}>
-								{"₦"}
-								{parseFloat(data.total).toFixed(2)}
+								<FormatMoney2 value={Number(data?.total)} />
 							</Text>
 						</View>
 					</View>

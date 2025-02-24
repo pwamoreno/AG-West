@@ -1,11 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, FormikProvider, useFormik } from "formik";
 import { useRouter } from "next/navigation";
-import { ClipLoader } from "react-spinners";
-import { useForgotPasswordMutation } from "../config/features/api";
-import { ForgotPasswordPayLoad, ForgotPasswordResponse } from "@constants";
-import FormToast from "../Reusables/Toast/SigninToast";
 import { ForgetPasswordFormModel } from "../config/models";
 import AuthModal from "../modal/AuthModal";
 import { forgotPassword } from "@utils/endpoints";

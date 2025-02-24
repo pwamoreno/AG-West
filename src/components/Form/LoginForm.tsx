@@ -1,21 +1,11 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import { SlArrowDown } from "react-icons/sl";
-import { Formik, Form, Field, FormikProvider, useFormik } from "formik";
+import React, { useState } from "react";
+import { Form, Field, FormikProvider, useFormik } from "formik";
 import { LoginFormModel } from "../config/models";
-import { FaCheck, FaEye, FaEyeSlash } from "react-icons/fa";
-import PhoneNumField from "./PhoneNumField";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import {
-	AUTH_EMAIL,
-	AUTH_TOKEN_KEY,
-	LoginPayload,
-	LoginResponse,
-} from "@constants";
+import { AUTH_EMAIL, AUTH_TOKEN_KEY } from "@constants";
 import Cookies from "js-cookie";
-import FormToast from "../Reusables/Toast/SigninToast";
-import { ClipLoader } from "react-spinners";
-import { useLoginMutation } from "../config/features/api";
 import { GoUnlock } from "react-icons/go";
 import { ImSpinner2 } from "react-icons/im";
 import { useMutation } from "react-query";
@@ -23,7 +13,7 @@ import { login } from "@utils/endpoints";
 import { toast } from "react-toastify";
 import { APICall } from "@utils";
 import { useAppDispatch } from "../hooks";
-import { authLogin, resetAuth } from "../Redux/Auth";
+import { authLogin } from "../Redux/Auth";
 import Link from "next/link";
 
 interface FormValues {

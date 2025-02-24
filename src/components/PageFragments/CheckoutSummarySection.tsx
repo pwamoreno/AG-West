@@ -5,13 +5,14 @@ import { useCart } from "react-use-cart";
 import { FormatMoney, FormatMoney2 } from "../Reusables/FormatMoney";
 import Link from "next/link";
 
-interface CheckoutSummarySectionProps {
-	calculateSubtotal: () => number;
-}
-
-const CheckoutSummarySection = ({
-	calculateSubtotal,
-}: CheckoutSummarySectionProps) => {
+const CheckoutSummarySection = () => {
+	const { items } = useCart();
+	const calculateSubtotal = () => {
+		return items.reduce(
+			(total, item: any) => total + item.price * item.quantity,
+			0,
+		);
+	};
 	const router = useRouter();
 
 	const handleCheckoutClick = () => {
@@ -23,7 +24,9 @@ const CheckoutSummarySection = ({
 			<h5 className='text-base sm:text-2xl font-semibold'>Summary</h5>
 			<div className='flex justify-between items-center text-sm sm:text-base font-[400] mt-6 pb-4 border border-secondary-700 border-t-0 border-r-0 border-l-0'>
 				<h4>Subtotal</h4>
-				<h4>{FormatMoney2(calculateSubtotal())}</h4>
+				<h4>
+					<FormatMoney2 value={calculateSubtotal()} />
+				</h4>
 			</div>
 
 			<div className='flex justify-between items-center mt-6 pb-4'>
@@ -31,12 +34,11 @@ const CheckoutSummarySection = ({
 					Total
 				</h4>
 				<h4 className='text-sm sm:text-xl font-bold text-secondary-400'>
-					{FormatMoney(calculateSubtotal())}
+					<FormatMoney2 value={calculateSubtotal()} />
 				</h4>
 			</div>
 			<Link
 				// onClick={handleCheckoutClick}
-
 				href={calculateSubtotal() === 0 ? "/" : "/checkout"}
 				className={`flex w-full justify-center items-center py-3 mt-4 rounded-md text-white ${
 					calculateSubtotal() === 0

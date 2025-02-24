@@ -3,6 +3,7 @@ import Link from "next/link";
 import { formatAmountToCurrency, statusStyles } from "@constants";
 import dayjs from "dayjs";
 import { LogoImage } from "@utils/function";
+import { FormatMoney2 } from "../Reusables/FormatMoney";
 
 interface InvoiceProps {
 	data: OrderGetType;
@@ -104,8 +105,7 @@ const Invoice = ({ data, printRef }: InvoiceProps) => {
 							Total Amount
 						</span>
 						<span className='text-2xl  font-bold text-red-500 block'>
-							{formatAmountToCurrency(Number(data?.total))}
-							{/* {parseFloat(data?.total).toFixed(2)} */}
+							<FormatMoney2 value={Number(data?.total)} />
 						</span>
 					</div>
 				</div>

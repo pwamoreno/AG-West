@@ -8,9 +8,6 @@ import { RiShoppingBagFill } from "react-icons/ri";
 import Picture from "../picture/Picture";
 import Link from "next/link";
 import { convertToSlug } from "@constants";
-import { useAppDispatch } from "../hooks";
-import { useDispatch } from "react-redux";
-import { updateProductSlugId } from "../config/features/subCategoryId";
 
 interface ProductCard2Props {
 	id: string | number;
@@ -110,7 +107,7 @@ const ProductCard2 = ({
 			<div className='flex-[.2] flex w-full flex-col px-2 pb-1'>
 				<div className='flex items-center justify-between'>
 					<h4 className='text-xs sm:text-base text-primary font-[400] leading-[1.8]'>
-						{NewAmount ? FormatMoney2(NewAmount) : "N/A"}
+						{NewAmount ? <FormatMoney2 value={NewAmount} /> : "N/A"}
 					</h4>
 					<div
 						className={`flex items-center gap-1 rounded-md text-white p-1 text-xs sm:text-sm transition ${

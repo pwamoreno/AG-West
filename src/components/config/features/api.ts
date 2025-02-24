@@ -1,11 +1,9 @@
 import {
-	BASE_URI,
 	Banner,
 	ForgotPasswordPayLoad,
 	ForgotPasswordResponse,
 	GeneralResponse,
 	GlobalSettingResponse,
-	LoginPayload,
 	LoginResponse,
 	MainCategoryResponse,
 	Order,
@@ -22,11 +20,9 @@ import {
 	UserAccountQuery,
 	UserAccountResponse,
 	UserOrdersPayload,
-	addCouponPayLoad,
 	addRequestPayLoad,
 	changePasswordPayLoad,
 	changePasswordResponse,
-	couponResponse,
 	createOrderPayLoad,
 	createOrderResponse,
 	deliveryPaymentPayLoad,
@@ -49,47 +45,15 @@ import {
 	verifyPaymentResponse,
 } from "@constants";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { signOut } from "@utils/lib";
-import { RootState } from "../store";
 // import { loadingBarRef } from "@src/app/layout";
 
 export const api = createApi({
 	reducerPath: "api",
 	baseQuery: fetchBaseQuery({
 		baseUrl: "",
-
-		// prepareHeaders: (headers, { getState }) => {
-		// 	const token = (getState() as any).auth.token;
-
-		// 	// If we have a token set in state, let's assume that we should be passing it.
-		// 	if (token) {
-		// 		headers.set("authorization", `Bearer ${token}`);
-		// 	}
-
-		// 	return headers;
-		// },
-		// fetchFn: async (...args) => {
-		// 	const result = await fetch(...args);
-		// 	if (result.status === 401 && window.location.pathname != "/login") {
-		// 		// store.dispatch(setToken({ token: null }));
-		// 		signOut();
-		// 	}
-		// 	return result;
-		// },
 	}),
 	tagTypes: ["Users"],
 	endpoints: (builder) => ({
-		login: builder.mutation<LoginResponse, LoginPayload>({
-			query: (payload) => ({
-				url: "/api/customer/login",
-				method: "POST",
-				body: payload,
-			}),
-			// onQueryStarted: () => {
-			//   loadingBarRef.current?.continuousStart();
-			// },
-		}),
-
 		verifyEmail: builder.mutation<verifyEmailResponse, verifyEmailPayLoad>({
 			query: (payload) => ({
 				url: "/api/customer/verify-email",
@@ -97,16 +61,7 @@ export const api = createApi({
 				body: payload,
 			}),
 		}),
-		ForgotPassword: builder.mutation<
-			ForgotPasswordResponse,
-			ForgotPasswordPayLoad
-		>({
-			query: (payload) => ({
-				url: "/api/customer/forget-password",
-				method: "PUT",
-				body: payload,
-			}),
-		}),
+
 		resetPassword: builder.mutation<
 			resetPasswordResponse,
 			resetPasswordPayLoad
@@ -250,12 +205,7 @@ export const api = createApi({
 				params: payload,
 			}),
 		}),
-		getCoupon: builder.query<couponResponse, addCouponPayLoad>({
-			query: ({ token, code, price }) => ({
-				url: `/api/coupon/validate/${code}/${price}`,
-				headers: { Authorization: `Bearer ${token}` },
-			}),
-		}),
+
 		getProduct: builder.query<ProductResponse, ProductPayload>({
 			query: (payload) => ({
 				url: `/api/products`,
@@ -301,8 +251,6 @@ export const api = createApi({
 });
 
 export const {
-	useLoginMutation,
-	useForgotPasswordMutation,
 	useVerifyEmailMutation,
 	useResetPasswordMutation,
 	useRegisterMutation,
@@ -327,5 +275,4 @@ export const {
 	useGetUserOrdersByIdQuery,
 	useGetGlobalSettingQuery,
 	useGetRequestQuery,
-	useGetCouponQuery,
 } = api;

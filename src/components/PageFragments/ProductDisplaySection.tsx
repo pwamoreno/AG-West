@@ -5,13 +5,11 @@ import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { FormatMoney2 } from "../Reusables/FormatMoney";
 import { useCart } from "react-use-cart";
 import Picture from "../picture/Picture";
-
 import SocialMediaShare from "../common/SocialMediaShare";
 import { useProduct } from "../lib/woocommerce";
 import RelatedProductsSection from "./RelatedProductsSection";
-import { useSelector } from "react-redux";
-import { RootState } from "../config/store";
 import { Skeleton } from "@nextui-org/react";
+import { useAppSelector } from "../hooks";
 
 interface ProductDisplaySectionProps {
 	FormatedId?: string;
@@ -26,12 +24,13 @@ const ProductDisplaySection = ({ FormatedId }: ProductDisplaySectionProps) => {
 	} = useProduct(FormatedId);
 
 	const Product: ProductType = product;
-
-	// console.log("Product", Product);
+	const { baseCurrency, exchangeRate } = useAppSelector(
+		(state) => state.currency,
+	);
+	// console.log("Product", Product.price_html);
 	const pathname = usePathname();
 	const router = useRouter();
 	const [count, setCount] = useState(0);
-	const [mainProductImage, setMainProductImage] = useState("");
 	const [baseUrl, setBaseUrl] = useState("");
 	const currentYear = new Date().getFullYear();
 
@@ -40,16 +39,6 @@ const ProductDisplaySection = ({ FormatedId }: ProductDisplaySectionProps) => {
 			setBaseUrl(`${window.location.protocol}//${window.location.host}`);
 		}
 	}, []);
-	const capitalizeFirstLetter = (word: string | null) => {
-		if (word) {
-			// Decode the URL-encoded characters
-			const decodedWord = decodeURIComponent(word);
-
-			// Capitalize the first letter and convert the rest to lowercase
-			return decodedWord.charAt(0) + decodedWord.slice(1);
-		}
-		return "";
-	};
 
 	const { addItem, removeItem, updateItem, getItem } = useCart();
 
@@ -101,9 +90,10 @@ const ProductDisplaySection = ({ FormatedId }: ProductDisplaySectionProps) => {
 		router.push("/cart");
 	};
 
-	// useEffect(() => {
-	// 	setMainProductImage(data?.image[0]);
-	// }, []);
+	// The base currency is Naira
+	// const baseCurrency = Product && extractCurrencySymbol(Product?.price_html);
+
+	const [rate, setRate] = useState(1);
 
 	return (
 		<>
@@ -117,7 +107,6 @@ const ProductDisplaySection = ({ FormatedId }: ProductDisplaySectionProps) => {
 									alt={Product?.name}
 									className='w-full p-2 object-contain'
 								/>
-
 								{/* <div className='flex flex-1 flex-col w-full items-center gap-4 justify-center sm:mt-3'>
 									<ProductPicSlider1
 										images={data.image}
@@ -152,11 +141,13 @@ const ProductDisplaySection = ({ FormatedId }: ProductDisplaySectionProps) => {
 										</h5>
 										<div className='flex gap-2 sm:gap-12 items-center flex-wrap'>
 											<h3 className='text-xl slg:text-2xl font-semibold leading-[.95] text-primary'>
-												{FormatMoney2(Price)}
+												<FormatMoney2 value={Price} />
 											</h3>
 
 											<h4 className='text-sm text-[#00000071] font-[400] line-through leading-[1.8]'>
-												{FormatMoney2(parseInt(Product?.regular_price))}
+												<FormatMoney2
+													value={parseInt(Product?.regular_price)}
+												/>
 											</h4>
 										</div>
 									</div>

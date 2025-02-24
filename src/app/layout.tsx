@@ -35,7 +35,7 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang='en'>
-			<body className={`${inter.className} bg-background w-full min-h-screen`}>
+			<body className={`${inter.className} w-full min-h-screen`}>
 				<AppProvider>{children}</AppProvider>
 			</body>
 		</html>

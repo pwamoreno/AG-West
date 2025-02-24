@@ -20,13 +20,11 @@ export const metadata: Metadata = {
 
 const page = () => {
 	return (
-		<AppLayout>
-			<main className='pt-10 mx-auto max-w-[1256px] mt-28 sm:mt-32'>
-				<AllCategorySection />
-				<div className='mt-4 sm:mt-10'>
-					<SortedProducts />
-				</div>
-			</main>
+		<AppLayout className="className='pt-10 mx-auto max-w-[1256px] mt-28 sm:mt-44">
+			<AllCategorySection />
+			<div className='mt-4 sm:mt-10'>
+				<SortedProducts />
+			</div>
 		</AppLayout>
 	);
 };

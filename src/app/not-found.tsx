@@ -7,8 +7,8 @@ const NotFound = () => {
 		<AppLayout>
 			<div className='h-[80vh] grid place-items-center'>
 				<div className='flex flex-col justify-center items-center'>
-					<TbError404 className='animate-bounce text-primary-100 text-4xl' />
-					<h3 className='text-base font-semibold text-primary-100'>
+					<TbError404 className='animate-bounce text-primary text-4xl' />
+					<h3 className='text-base font-semibold text-primary'>
 						Page not found
 					</h3>
 				</div>

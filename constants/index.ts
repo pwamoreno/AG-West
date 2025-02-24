@@ -632,13 +632,6 @@ export const mainProductCardData: mainProductCardDataProps[] = [
 	},
 ];
 
-// API constant typings
-// Payloads
-export interface LoginPayload {
-	email: any;
-	password: any;
-}
-
 export interface ForgotPasswordPayLoad {
 	email: any;
 }
@@ -736,11 +729,6 @@ export interface createOrderPayLoad {
 export interface addRequestPayLoad {
 	token: string;
 	id: string;
-}
-export interface addCouponPayLoad {
-	token: string;
-	code: string;
-	price: number;
 }
 export interface verifyPaymentPayLoad {
 	type: string;
@@ -1112,10 +1100,6 @@ export interface verifyPaymentResponse {
 	status: boolean;
 	data: any;
 }
-export interface couponResponse {
-	value: number;
-	status: boolean;
-}
 export interface initializeOrderPaymentResponse {
 	authorization_url: string;
 	access_code: string;
@@ -1167,3 +1151,29 @@ export const formatAmountToCurrency = (amount: number) => {
 		currency: "NGN",
 	}).format(amount);
 };
+
+export const currencyOptions: {
+	code: string;
+	label: string;
+	symbol: string;
+	country: string;
+	countryCode: string; // Added country code
+}[] = [
+	{
+		code: "NGN",
+		label: "Nigerian Naira (₦)",
+		symbol: "₦",
+		country: "Nigeria",
+		countryCode: "NG", // Added country code for Nigeria
+	},
+	{
+		code: "USD",
+		label: "US Dollar ($)",
+		symbol: "$",
+		country: "United States",
+		countryCode: "US", // Added country code for United States
+	},
+	// { code: "GBP", label: "British Pound (£)", symbol: "£", country: "United Kingdom", countryCode: "GB" },
+	// { code: "EUR", label: "Euro (€)", symbol: "€", country: "Eurozone", countryCode: "EU" },
+	// { code: "JPY", label: "Japanese Yen (¥)", symbol: "¥", country: "Japan", countryCode: "JP" },
+];

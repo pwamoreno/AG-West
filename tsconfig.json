@@ -40,7 +40,7 @@
     "src/components/image-uploader/Uploader.jsx",
     "src/components/config/features/api.ts",
     "src/components/Reusables/PaginationComponent.jsx",
-    "src/components/invoice/InvoiceForDownload.jsx",
+    "src/components/invoice/InvoiceForDownload.tsx",
     "src/app/order/[id]/page.tsx",
     "src/components/pdf-uploader/PdfLoader.jsx",
     "build/types/**/*.ts"

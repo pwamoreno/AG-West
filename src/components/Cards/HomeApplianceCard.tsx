@@ -104,7 +104,7 @@ const HomeApplianceCard = ({
 					<hr className='border-t-2 border-dashed border-[#bfbfbf4f] my-2 w-[35%]' />
 					<div className='flex items-center justify-between'>
 						<h4 className='text-base text-primary font-semibold leading-[1.5]'>
-							{FormatMoney2(newAmount)}
+							{<FormatMoney2 value={newAmount} />}
 						</h4>
 						<div
 							className={`flex items-center gap-1 rounded-md text-white p-1 text-sm transition ${

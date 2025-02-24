@@ -1,25 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Formik, Form, Field, FormikProvider, useFormik } from "formik";
+import { Form, Field, FormikProvider, useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { ClipLoader } from "react-spinners";
-import {
-	useForgotPasswordMutation,
-	useResetPasswordMutation,
-} from "../config/features/api";
-import {
-	ForgotPasswordPayLoad,
-	ForgotPasswordResponse,
-	resetPasswordPayLoad,
-	resetPasswordResponse,
-} from "@constants";
+import { useResetPasswordMutation } from "../config/features/api";
+import { resetPasswordPayLoad, resetPasswordResponse } from "@constants";
 import FormToast from "../Reusables/Toast/SigninToast";
-import {
-	ForgetPasswordFormModel,
-	resetPasswordFormModel,
-} from "../config/models";
+import { resetPasswordFormModel } from "../config/models";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import AuthModal from "../modal/AuthModal";
 
 interface FormValues {
@@ -31,7 +19,6 @@ interface ResetPasswordFormProps {
 }
 
 const ResetPasswordForm = ({ token }: ResetPasswordFormProps) => {
-	console.log(token);
 	const router = useRouter();
 	const [showPassword, setShowPassword] = useState(false);
 	const [isModalOpen, setIsModalOpen] = useState(false);

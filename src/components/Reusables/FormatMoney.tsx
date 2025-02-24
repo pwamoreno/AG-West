@@ -1,3 +1,7 @@
+"use client";
+
+import { useAppSelector } from "../hooks";
+
 export const FormatMoney = (value: number) => {
 	const formattedValue = value.toLocaleString("en-NG", {
 		style: "currency",
@@ -14,13 +18,24 @@ export const FormatMoney = (value: number) => {
 	);
 };
 
-export const FormatMoney2 = (value: number) => {
-	const formattedValue = value?.toLocaleString("en-NG", {
-		style: "currency",
-		currency: "NGN",
-		minimumFractionDigits: 2, // Adding this option to set minimum fraction digits to 2
-		maximumFractionDigits: 2, // Adding this option to set maximum fraction digits to 2
+export const FormatMoney2 = ({ value }: any) => {
+	const { exchangeRate, baseCurrency } = useAppSelector(
+		(state) => state.currency,
+	);
+	if (!value) return null;
+
+	// Convert the value based on the exchange rate
+	const convertedValue = value * exchangeRate;
+
+	// Format the converted value
+	const formattedValue = convertedValue.toLocaleString("en-NG", {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2,
 	});
 
-	return <span className=''>{formattedValue}</span>;
+	return (
+		<span>
+			{baseCurrency.symbol} {formattedValue}
+		</span>
+	);
 };

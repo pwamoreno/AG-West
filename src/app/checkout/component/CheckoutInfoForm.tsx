@@ -29,6 +29,7 @@ import {
 	checkoutFormModel,
 } from "@src/components/config/models";
 import { RootState } from "@src/components/config/store";
+import { useAppSelector } from "@src/components/hooks";
 import useToken from "@src/components/hooks/useToken";
 import { useCreateOrder, useCustomer } from "@src/components/lib/woocommerce";
 import AuthModal from "@src/components/modal/AuthModal";
@@ -82,6 +83,7 @@ const CheckoutInfoForm = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [paymentRef, setPaymentRef] = useState("");
 	const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+	const { baseCurrency } = useAppSelector((state) => state.currency);
 
 	const {
 		mutate: createOrder,
@@ -294,14 +296,14 @@ const CheckoutInfoForm = () => {
 				first_name: value?.firstName,
 				last_name: value?.lastName,
 				mobile: value?.phone?.toString(),
-				country: "NG",
+				country: baseCurrency.countryCode,
 				email: value?.email,
 			},
 			Order: {
 				amount: calculateSubtotal(),
 				reference: generateUniqueReference(),
 				description: value?.orderNotes,
-				currency: "NGN",
+				currency: baseCurrency.code,
 			},
 		};
 
@@ -319,7 +321,7 @@ const CheckoutInfoForm = () => {
 		const orderPaymentData = {
 			reference: paymentRef,
 			payment_option: "C",
-			country: "NG",
+			country: baseCurrency.countryCode,
 			card: {
 				cvv: value.cvv,
 				card_number: value.cardNumber,
@@ -602,7 +604,9 @@ const CheckoutInfoForm = () => {
 							</h5>
 							<div className='flex justify-between items-center text-sm sm:text-base font-[400] pb-4'>
 								<h4>Subtotal</h4>
-								<h4>{FormatMoney2(calculateSubtotal())}</h4>
+								<h4>
+									<FormatMoney2 value={calculateSubtotal()} />
+								</h4>
 							</div>
 
 							<div className='flex justify-between items-center mt-3 pb-4'>
@@ -610,7 +614,7 @@ const CheckoutInfoForm = () => {
 									Total
 								</h4>
 								<h4 className='text-base sm:text-xl font-bold text-secondary-400'>
-									{FormatMoney(calculateTotal())}
+									<FormatMoney2 value={calculateTotal()} />
 								</h4>
 							</div>
 							<button

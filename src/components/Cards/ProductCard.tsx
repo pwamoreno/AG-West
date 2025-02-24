@@ -99,7 +99,7 @@ const ProductCard = ({
 			<div className='sm:flex-[.2] flex flex-col gap-2 px-2'>
 				<div className='flex items-center justify-between'>
 					<h4 className='text-xs sm:text-base text-primary font-[400] leading-[1.8]'>
-						{FormatMoney2(newAmount)}
+						<FormatMoney2 value={newAmount} />
 					</h4>
 					<div
 						className={`flex items-center gap-1 rounded-md text-white p-1 text-xs sm:text-sm transition ${
