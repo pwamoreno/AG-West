@@ -58,7 +58,6 @@ const RelatedProductsSection = ({
 			}
 		}
 	};
-
 	return (
 		<div className='bg-white mt-3 slg:mt-6 w-full pt-2 pb-8 px-3 slg:px-6 mb-24'>
 			<h4 className='text-secondary-200 uppercase text-xs slg:text-sm font-bold leading-[1.5] pt-6 pb-3'>
