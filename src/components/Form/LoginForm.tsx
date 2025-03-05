@@ -15,6 +15,7 @@ import { APICall } from "@utils";
 import { useAppDispatch } from "../hooks";
 import { authLogin } from "../Redux/Auth";
 import Link from "next/link";
+import FormToast from "../Reusables/Toast/SigninToast";
 
 interface FormValues {
 	email: string;
@@ -56,7 +57,10 @@ const LoginForm = () => {
 					);
 					router.push("/");
 				} else {
-					toast.error("You can only be a customer to login to this platform.");
+					FormToast({
+						message: "You can only be a customer to login to this platform.",
+						success: false,
+					});
 				}
 			},
 			onError: (error: any) => {

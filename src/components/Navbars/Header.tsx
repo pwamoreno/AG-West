@@ -6,15 +6,12 @@ import HomePageBottomHeader from "./HomePageBottomHeader";
 import CategoryPageBottomHeader from "./CategoryPageBottomHeader";
 import ProductPageBottomHeader from "./ProductPageBottomHeader";
 import {
-	Button,
 	Dropdown,
 	DropdownItem,
 	DropdownMenu,
 	DropdownTrigger,
-	Select,
-	SelectItem,
-	Tooltip,
 } from "@nextui-org/react";
+import { useMutation } from "react-query";
 import Link from "next/link";
 import { useCart } from "react-use-cart";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -39,6 +36,8 @@ import { useDisclosure } from "@node_modules/@nextui-org/use-disclosure/dist";
 import { Modal, ModalContent } from "@node_modules/@nextui-org/modal/dist";
 import { setBaseCurrency, setExchangeRate } from "../Redux/Currency";
 import { fetchExchangeRate } from "@utils/endpoints";
+import { APICall } from "@utils";
+import FormToast from "../Reusables/Toast/SigninToast";
 
 const Header = () => {
 	const pathname = usePathname();
@@ -148,10 +147,37 @@ const Header = () => {
 		onOpenChange: onOpenChangeBaseCurrency,
 	} = useDisclosure();
 
+	const exchangeRATEMutation = useMutation(
+		async (value: string) => {
+			const response = await APICall(
+				fetchExchangeRate,
+				["NGN", value],
+				true,
+				true,
+			);
+			return response;
+		},
+		{
+			onSuccess: async (data) => {
+				FormToast({
+					message: "Exchange rate retrieved successfully.",
+					success: true,
+				});
+			},
+			onError: (error: any) => {
+				const errorMessage = "Failed to fetch exchange rate. Please try again.";
+
+				FormToast({
+					message: errorMessage,
+					success: false,
+				});
+			},
+		},
+	);
+
 	// Handle currency change
 	const handleCurrencyChange = async (keys: "all" | Set<React.Key>) => {
 		const selectedValue = Array.from(keys)[0] as string;
-		setSelectedCurrency(selectedValue);
 
 		// Find the selected currency object
 		const selectedCurrencyObj = currencyOptions.find(
@@ -159,26 +185,21 @@ const Header = () => {
 		);
 		if (!selectedCurrencyObj) return;
 
-		// Update Redux store
-		dispatch(
-			setBaseCurrency({
-				code: selectedCurrencyObj.code,
-				symbol: selectedCurrencyObj.symbol,
-				countryCode: selectedCurrencyObj.countryCode,
-			}),
-		);
-
 		// Fetch exchange rate
 		try {
-			const rate = await fetchExchangeRate("NGN", selectedCurrencyObj.code);
-			if (rate) {
-				dispatch(setExchangeRate(rate));
+			const data = await exchangeRATEMutation.mutateAsync(
+				selectedCurrencyObj.code,
+			);
+
+			if (data) {
+				dispatch(setExchangeRate(data));
+				setSelectedCurrency(selectedValue);
 			}
 		} catch (error) {
 			console.error("Error fetching exchange rate:", error);
-		} finally {
 		}
 	};
+
 	return (
 		<>
 			<header
