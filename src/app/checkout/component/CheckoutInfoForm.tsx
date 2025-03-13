@@ -396,7 +396,11 @@ const CheckoutInfoForm = () => {
 			setPaystackLoading(false); // Set loading to false once the URL is ready
 		},
 		onError: (error: any) => {
-			console.error("Error initializing Paystack payment:", error);
+			// console.error("Error initializing Paystack payment:", error);
+			FormToast({
+				message: error?.message,
+				success: false,
+			});
 			setPaystackLoading(false); // Reset loading state on error
 		},
 		onSettled: () => {
