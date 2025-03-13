@@ -372,8 +372,8 @@ const CheckoutInfoForm = () => {
 				},
 				body: JSON.stringify({
 					email: values.email, // The email of the user making the payment
-					amount: calculateSubtotal() * 100, // Amount in kobo (convert to kobo)
-					currency: "NGN", // Paystack supports multiple currencies, use NGN for Nigerian Naira
+					amount: Math.round(convertedValue * 100), // Amount in kobo (convert to kobo)
+					currency: baseCurrency.code, // Paystack supports multiple currencies, use NGN for Nigerian Naira
 				}),
 			},
 		);
