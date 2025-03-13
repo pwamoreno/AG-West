@@ -1,40 +1,17 @@
 "use client";
-import {
-	UserInfo,
-	deliveryPaymentResponse,
-	filterCustomersByEmail,
-	generateUniqueReference,
-	initializeOrderPaymentPayLoad,
-	initializeOrderPaymentResponse,
-	isValidEmail,
-} from "@constants";
-import {
-	maestroImageNameImg1,
-	mastercardImageNameImg1,
-	visaImg1,
-} from "@public/images";
-import {
-	FormatMoney,
-	FormatMoney2,
-} from "@src/components/Reusables/FormatMoney";
+import { filterCustomersByEmail, generateUniqueReference } from "@constants";
+import { FormatMoney2 } from "@src/components/Reusables/FormatMoney";
 import FormToast from "@src/components/Reusables/Toast/SigninToast";
-import { PaymentOptButton } from "@src/components/buttons";
-import {
-	useGetUserAccountQuery,
-	useInitializeOrderPaymentMutation,
-	useOnDeliveryPaymentMutation,
-} from "@src/components/config/features/api";
 import {
 	cardPaymentFormModel,
 	checkoutFormModel,
 } from "@src/components/config/models";
-import { RootState } from "@src/components/config/store";
+import { RadioGroup, Radio } from "@nextui-org/react";
 import { useAppSelector } from "@src/components/hooks";
 import useToken from "@src/components/hooks/useToken";
 import { useCreateOrder, useCustomer } from "@src/components/lib/woocommerce";
 import AuthModal from "@src/components/modal/AuthModal";
 import SignupModal from "@src/components/modal/SignupModal";
-import Picture from "@src/components/picture/Picture";
 import { APICall } from "@utils";
 import {
 	cardPaymentRedirect,
@@ -45,13 +22,19 @@ import {
 import { City, ICity, State } from "country-state-city";
 import { ErrorMessage, Field, Form, FormikProvider, useFormik } from "formik";
 import { useRouter } from "next/navigation";
+import Select from "react-select";
 import React, { useEffect, useState } from "react";
 import { ImSpinner2 } from "react-icons/im";
 import { SlArrowDown } from "react-icons/sl";
 import { useMutation } from "react-query";
-import { useSelector } from "react-redux";
 import { ClipLoader } from "react-spinners";
 import { useCart } from "react-use-cart";
+import { PAYSTACK_PUBLIC_KEY, PAYSTACK_SECRET_KEY } from "@utils/lib/data";
+
+interface SelectOption {
+	label: string;
+	value: string;
+}
 
 interface PaymentFormValues {
 	cardNumber: string; // The card number as a string
@@ -74,16 +57,31 @@ interface FormValues {
 const CheckoutInfoForm = () => {
 	const { token, email } = useToken();
 	const router = useRouter();
-	const [citiesForSelectedCountry, setCitiesForSelectedCountry] = useState<
-		ICity[]
+	const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
+	const [paystackLoading, setPaystackLoading] = useState(false);
+	const states: SelectOption[] = State.getStatesOfCountry("NG").map(
+		(state) => ({
+			label: state.name,
+			value: state.isoCode, // Use isoCode for accuracy
+		}),
+	);
+	const [selectedPaymentChannel, setSelectedPaymentChannel] =
+		useState("alliance_pay");
+	const [citiesForSelectedState, setCitiesForSelectedState] = useState<
+		SelectOption[]
 	>([]);
+	// const [citiesForSelectedCountry, setCitiesForSelectedCountry] = useState<
+	// 	ICity[]
+	// >([]);
 	const [state, setState] = useState("");
 	const [iframeUrl, setIframeUrl] = useState(null);
-	const states = State.getStatesOfCountry("NG");
+
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [paymentRef, setPaymentRef] = useState("");
 	const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-	const { baseCurrency } = useAppSelector((state) => state.currency);
+	const { baseCurrency, exchangeRate } = useAppSelector(
+		(state) => state.currency,
+	);
 
 	const {
 		mutate: createOrder,
@@ -108,19 +106,33 @@ const CheckoutInfoForm = () => {
 		router.push("/user/login");
 	};
 
-	const handleStateChange = (stateCode: string) => {
-		const cities = City.getCitiesOfState("NG", stateCode);
-		setCitiesForSelectedCountry(cities);
+	const handleStateChange = (selectedOption: SelectOption | null) => {
+		if (selectedOption) {
+			const stateCode = selectedOption.value;
+			const cities: ICity[] = City.getCitiesOfState("NG", stateCode);
+
+			setCitiesForSelectedState(
+				cities.map((city) => ({
+					label: city.name,
+					value: city.name,
+				})),
+			);
+
+			formik.setFieldValue("state", selectedOption.label);
+			formik.setFieldValue("city", ""); // Reset city when state changes
+		}
 	};
 	const { items, emptyCart } = useCart();
+
 	const calculateSubtotal = () => {
 		return items.reduce(
 			(total, item: any) => total + item?.price * item?.quantity,
 			0,
 		);
 	};
+	const convertedValue = calculateSubtotal() * exchangeRate;
 	const calculateTotal = () => {
-		return calculateSubtotal();
+		return convertedValue;
 		// You can add any additional charges or discounts here if needed.
 	};
 
@@ -300,7 +312,7 @@ const CheckoutInfoForm = () => {
 				email: value?.email,
 			},
 			Order: {
-				amount: calculateSubtotal(),
+				amount: convertedValue,
 				reference: generateUniqueReference(),
 				description: value?.orderNotes,
 				currency: baseCurrency.code,
@@ -344,12 +356,66 @@ const CheckoutInfoForm = () => {
 	};
 
 	// console.log("initialValues", initialValues);
+
+	const initializePaystackPayment = async (values: FormValues) => {
+		if (!PAYSTACK_PUBLIC_KEY || !PAYSTACK_SECRET_KEY) {
+			throw new Error("Paystack API keys are missing!");
+		}
+
+		const response = await fetch(
+			"https://api.paystack.co/transaction/initialize",
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`, // Secret key should never be exposed to the client
+				},
+				body: JSON.stringify({
+					email: values.email, // The email of the user making the payment
+					amount: calculateSubtotal() * 100, // Amount in kobo (convert to kobo)
+					currency: "NGN", // Paystack supports multiple currencies, use NGN for Nigerian Naira
+				}),
+			},
+		);
+
+		const data = await response.json();
+
+		if (data.status) {
+			return data.data.authorization_url; // Return the authorization URL to be used
+		} else {
+			throw new Error(data.message); // Throw an error if something went wrong
+		}
+	};
+
+	const paystackMutation = useMutation(initializePaystackPayment, {
+		onMutate: () => {
+			setPaystackLoading(true); // Set loading to true when the mutation starts
+		},
+		onSuccess: (authorizationUrl: string) => {
+			setPaymentUrl(authorizationUrl); // Set the payment URL received from Paystack
+			setPaystackLoading(false); // Set loading to false once the URL is ready
+		},
+		onError: (error: any) => {
+			console.error("Error initializing Paystack payment:", error);
+			setPaystackLoading(false); // Reset loading state on error
+		},
+		onSettled: () => {
+			setPaystackLoading(false); // Always reset loading when mutation completes (success or error)
+		},
+	});
+
 	const formik = useFormik({
 		initialValues: initialValues,
 		validationSchema: checkoutFormModel,
 		enableReinitialize: true,
-		onSubmit: (values, { setSubmitting }) => {
-			handleFormSubmit(values, setSubmitting);
+		onSubmit: async (values, { setSubmitting }) => {
+			setSubmitting(true);
+			if (selectedPaymentChannel === "alliance_pay") {
+				await handleFormSubmit(values, setSubmitting);
+			} else {
+				paystackMutation.mutate(values);
+			}
+			setSubmitting(false);
 		},
 	});
 
@@ -378,56 +444,56 @@ const CheckoutInfoForm = () => {
 						<h3 className='text-base sm:text-2xl font-[500] text-secondary-400 mb-5'>
 							Delivery Information
 						</h3>
-						<div className='grid md:grid-cols-2 gap-3 sm:gap-8'>
-							<div>
-								<label
-									htmlFor='firstName'
-									className='block font-[500] text-xs sm:text-base text-secondary-400 mb-2'
-								>
-									First Name <span className='text-red-500'>*</span>
-								</label>
 
-								<Field
-									type='text'
-									id='firstName'
-									name='firstName'
-									placeholder='Enter first name'
-									required
-									className={`w-full p-2 sm:py-3 font-[400] text-xs sm:text-base rounded-md border border-secondary-800 outline-none focus:border-secondary-800 transition-[.5] ease-in`}
-								/>
+						<div className='grid gap-4'>
+							<div className='grid md:grid-cols-2 gap-3 sm:gap-8'>
+								<div>
+									<label
+										htmlFor='firstName'
+										className='block font-[500] text-xs sm:text-base text-secondary-400 mb-2'
+									>
+										First Name <span className='text-red-500'>*</span>
+									</label>
 
-								<ErrorMessage
-									name={"firstName"}
-									component={"div"}
-									className='text-red-600 text-xs text-left'
-								/>
+									<Field
+										type='text'
+										id='firstName'
+										name='firstName'
+										placeholder='Enter first name'
+										required
+										className={`w-full p-2 sm:py-3 font-[400] text-xs sm:text-base rounded-md border border-secondary-800 outline-none focus:border-secondary-800 transition-[.5] ease-in`}
+									/>
+
+									<ErrorMessage
+										name={"firstName"}
+										component={"div"}
+										className='text-red-600 text-xs text-left'
+									/>
+								</div>
+								<div>
+									<label
+										htmlFor='lastName'
+										className='block font-[500] text-xs sm:text-base text-secondary-400 mb-2'
+									>
+										Last Name <span className='text-red-500'>*</span>
+									</label>
+
+									<Field
+										type='text'
+										id='lastName'
+										placeholder='Enter last name'
+										name='lastName'
+										required
+										className={`w-full p-2 sm:py-3 font-[400] text-xs sm:text-base rounded-md border border-secondary-800 outline-none focus:border-secondary-800 transition-[.5] ease-in`}
+									/>
+
+									<ErrorMessage
+										name={"lastName"}
+										component={"div"}
+										className='text-red-600 text-xs text-left'
+									/>
+								</div>
 							</div>
-							<div>
-								<label
-									htmlFor='lastName'
-									className='block font-[500] text-xs sm:text-base text-secondary-400 mb-2'
-								>
-									Last Name <span className='text-red-500'>*</span>
-								</label>
-
-								<Field
-									type='text'
-									id='lastName'
-									placeholder='Enter last name'
-									name='lastName'
-									required
-									className={`w-full p-2 sm:py-3 font-[400] text-xs sm:text-base rounded-md border border-secondary-800 outline-none focus:border-secondary-800 transition-[.5] ease-in`}
-								/>
-
-								<ErrorMessage
-									name={"lastName"}
-									component={"div"}
-									className='text-red-600 text-xs text-left'
-								/>
-							</div>
-						</div>
-
-						<div className='grid mt-4 gap-4'>
 							<div>
 								<label
 									htmlFor='state'
@@ -436,36 +502,25 @@ const CheckoutInfoForm = () => {
 									State
 								</label>
 
-								<div className='relative'>
-									<Field
-										as='select'
-										name='state'
-										className='w-full p-2 sm:py-3 font-[400] text-xs sm:text-base rounded-md border border-secondary-800 outline-none focus:border-secondary-800 transition-[.5] ease-in appearance-none cursor-pointer'
-										onChange={(event: any) => {
-											const selectedValue = event.target.value;
-											setState(selectedValue);
-											handleStateChange(
-												event.target.selectedOptions[0].dataset.isocode,
-											);
-										}}
-									>
-										<option value='' data-isocode=''>
-											Select State
-										</option>
-										{states.map((stateName: any, index: number) => (
-											<option
-												key={index}
-												value={stateName.name}
-												data-isocode={stateName.isoCode}
-											>
-												{stateName.name}
-											</option>
-										))}
-									</Field>
-									<span className='absolute inset-y-0 right-2 flex items-center pr-2 pointer-events-none'>
-										<SlArrowDown className='cursor-pointer z-4' />
-									</span>
-								</div>
+								<Select
+									name='state'
+									options={states}
+									value={
+										states.find(
+											(option) => option.label === formik.values.state,
+										) || null
+									}
+									onChange={handleStateChange}
+									className='w-full'
+									isSearchable
+									styles={{
+										valueContainer: (base) => ({
+											...base,
+											minHeight: "50px",
+											// padding: "10px",
+										}),
+									}}
+								/>
 								<ErrorMessage
 									name={"state"}
 									component={"div"}
@@ -479,24 +534,30 @@ const CheckoutInfoForm = () => {
 								>
 									Select City
 								</label>
-								<div className='relative'>
-									<Field
-										as='select'
-										name='city'
-										className='w-full p-2 sm:py-3 font-[400] text-xs sm:text-base rounded-md border border-secondary-800 outline-none focus:border-secondary-800 transition-[.5] ease-in appearance-none cursor-pointer'
-									>
-										<option value=''>Select your city</option>
-										{citiesForSelectedCountry.map((cityName, index) => (
-											<option key={index} value={cityName.name}>
-												{cityName.name}
-											</option>
-										))}
-									</Field>
 
-									<span className='absolute inset-y-0 right-2 flex items-center pr-2 pointer-events-none'>
-										<SlArrowDown className='cursor-pointer z-4' />
-									</span>
-								</div>
+								<Select
+									name='city'
+									options={citiesForSelectedState}
+									value={
+										citiesForSelectedState.find(
+											(option) => option.label === formik.values.city,
+										) || null
+									}
+									onChange={(selectedOption) =>
+										formik.setFieldValue("city", selectedOption?.label)
+									}
+									className='w-full mt-4'
+									isSearchable
+									isDisabled={citiesForSelectedState.length === 0}
+									styles={{
+										valueContainer: (base) => ({
+											...base,
+											minHeight: "50px",
+											// padding: "10px",
+										}),
+									}}
+								/>
+
 								<ErrorMessage
 									name={"city"}
 									component={"div"}
@@ -591,14 +652,22 @@ const CheckoutInfoForm = () => {
 						</div>
 					</div>
 
-					<div className='flex-[.4] flex flex-col'>
-						<div className='mt-2 bg-white px-3 sm:px-8 py-5 rounded-xl'>
-							<h4 className='font-semibold text-base sm:text-lg text-secondary-400'>
-								Payment Method -{" "}
-								<span className='text-primary'>Alliancepay</span>
-							</h4>
+					<div className='flex-[.4] space-y-6 bg-white rounded-xl px-4 h-fit py-3'>
+						<div className=''>
+							<h5 className='text-sm sm:text-base font-semibold mb-3 sm:mb-6 text-primary'>
+								Select Payment Option
+							</h5>
+							<RadioGroup
+								value={selectedPaymentChannel}
+								onChange={(e) => setSelectedPaymentChannel(e.target.value)}
+								className='font-semibold'
+								orientation='horizontal'
+							>
+								<Radio value='alliance_pay'>Alliancepay</Radio>
+								<Radio value='paystack'>Paystack</Radio>
+							</RadioGroup>
 						</div>
-						<div className='mt-2 bg-white px-4 py-6 sm:py-12 rounded-xl'>
+						<div className=''>
 							<h5 className='text-base sm:text-2xl font-semibold mb-3 sm:mb-6'>
 								Your Order
 							</h5>
@@ -614,7 +683,7 @@ const CheckoutInfoForm = () => {
 									Total
 								</h4>
 								<h4 className='text-base sm:text-xl font-bold text-secondary-400'>
-									<FormatMoney2 value={calculateTotal()} />
+									<FormatMoney2 value={calculateSubtotal()} />
 								</h4>
 							</div>
 							<button
@@ -624,10 +693,14 @@ const CheckoutInfoForm = () => {
 										? "bg-primaryColor-100 cursor-pointer"
 										: "cursor-not-allowed bg-primary/60"
 								}`}
-								disabled={encryptedMutation?.isLoading || !formik.isValid}
+								disabled={
+									encryptedMutation?.isLoading ||
+									!formik.isValid ||
+									paystackMutation?.isLoading
+								}
 								// onClick={handleFormSubmit}
 							>
-								{encryptedMutation?.isLoading ? (
+								{encryptedMutation?.isLoading || paystackMutation?.isLoading ? (
 									<ClipLoader color='#d4d3d3' size={20} />
 								) : (
 									"Place Order"
@@ -638,6 +711,28 @@ const CheckoutInfoForm = () => {
 				</Form>
 			</FormikProvider>
 
+			{paymentUrl && (
+				<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
+					<div className='bg-white rounded-md w-11/12 max-w-2xl p-4'>
+						<iframe
+							src={paymentUrl}
+							width='100%'
+							height='600px'
+							title='Paystack Payment'
+							className='rounded-md'
+						/>
+						<button
+							onClick={() => {
+								emptyCart();
+								setPaymentUrl(null);
+							}}
+							className='mt-4 bg-red-500 text-white py-1 px-4 rounded'
+						>
+							Close
+						</button>
+					</div>
+				</div>
+			)}
 			<SignupModal
 				isOpen={isModalOpen ? true : false}
 				onClose={handleCloseModal}

@@ -22,3 +22,7 @@ export const WC_URL = process.env.NEXT_PUBLIC_WC_API_URL || "";
 export const WC_ConsumerKey = process.env.NEXT_PUBLIC_WC_CONSUMER_KEY || "";
 export const WC_consumerSecret =
 	process.env.NEXT_PUBLIC_WC_CONSUMER_SECRET || "";
+export const PAYSTACK_PUBLIC_KEY =
+	process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || "";
+export const PAYSTACK_SECRET_KEY =
+	process.env.NEXT_PUBLIC_PAYSTACK_SECRET_KEY || "";

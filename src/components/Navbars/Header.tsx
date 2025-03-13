@@ -193,6 +193,7 @@ const Header = () => {
 
 			if (data) {
 				dispatch(setExchangeRate(data));
+				dispatch(setBaseCurrency(selectedCurrencyObj));
 				setSelectedCurrency(selectedValue);
 			}
 		} catch (error) {
