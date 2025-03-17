@@ -26,7 +26,7 @@ import { SlArrowDown } from "react-icons/sl";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiShoppingCart } from "react-icons/fi";
 import Picture from "../picture/Picture";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { useCustomer } from "../lib/woocommerce";
 import { currencyOptions, filterCustomersByEmail } from "@constants";
 import { ImSpinner2 } from "react-icons/im";
@@ -51,7 +51,7 @@ const Header = () => {
 	const { token, email } = useToken();
 	const [searchValue, setSearchValue] = useState("");
 	const { baseCurrency } = useAppSelector((state) => state.currency);
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const [selectedCurrency, setSelectedCurrency] = useState(baseCurrency.code);
 	const { data: customer, isLoading, isError } = useCustomer("");
 	const wc_customer2_info: Woo_Customer_Type[] = customer;
@@ -393,7 +393,7 @@ const Header = () => {
 								onClick={handleNavMenuClick}
 								className='text-3xl text-primary hover:scale-105 transition-[.5]'
 							/>
-							<LogoImage className='rounded-sm' />
+							<LogoImage className='rounded-sm !w-[120px] ' />
 						</div>
 
 						<div className='flex gap-4 justify-center items-center cursor-pointer'>

@@ -6,6 +6,7 @@ import {
 	cardPaymentFormModel,
 	checkoutFormModel,
 } from "@src/components/config/models";
+import { PaystackButton } from "react-paystack";
 import { RadioGroup, Radio } from "@nextui-org/react";
 import { useAppSelector } from "@src/components/hooks";
 import useToken from "@src/components/hooks/useToken";
@@ -408,17 +409,55 @@ const CheckoutInfoForm = () => {
 		},
 	});
 
+	const handleSuccess = (response: any) => {
+		if (response.status === "success") {
+			createOrder(orderData);
+			FormToast({
+				message: "Payment successful!",
+				success: true,
+			});
+			emptyCart();
+			setPaymentUrl(null);
+			router.push("/");
+			// Handle post-payment success (e.g., API call to verify transaction)
+		}
+	};
+
+	const handleClose = () => {
+		FormToast({
+			message: "Payment was canceled",
+			success: false,
+		});
+	};
+
+	// const handlePaystackPayment = (values: FormValues) => {
+	// 	return (
+	// 		<PaystackButton
+	// 			email={values?.email ? values?.email : ""}
+	// 			amount={Math.round(convertedValue * 100)} // Amount in kobo
+	// 			currency={baseCurrency.code}
+	// 			publicKey={PAYSTACK_PUBLIC_KEY}
+	// 			text='Pay Now'
+	// 			onSuccess={handleSuccess}
+	// 			onClose={handleClose}
+	// 			className={`flex w-full justify-center items-center py-2 sm:py-3 px-14 mt-2 sm:mt-4 rounded-md text-white transition font-bold text-base ${
+	// 				formik.isValid
+	// 					? "bg-primaryColor-100 cursor-pointer"
+	// 					: "cursor-not-allowed bg-primary/60"
+	// 			}`}
+	// 		/>
+	// 	);
+	// };
+
 	const formik = useFormik({
 		initialValues: initialValues,
 		validationSchema: checkoutFormModel,
 		enableReinitialize: true,
 		onSubmit: async (values, { setSubmitting }) => {
 			setSubmitting(true);
-			if (selectedPaymentChannel === "alliance_pay") {
-				await handleFormSubmit(values, setSubmitting);
-			} else {
-				paystackMutation.mutate(values);
-			}
+
+			await handleFormSubmit(values, setSubmitting);
+
 			setSubmitting(false);
 		},
 	});
@@ -690,26 +729,31 @@ const CheckoutInfoForm = () => {
 									<FormatMoney2 value={calculateSubtotal()} />
 								</h4>
 							</div>
-							<button
-								type='submit'
-								className={`flex w-full justify-center items-center py-2 sm:py-3 px-14 mt-2 sm:mt-4 rounded-md text-white transition font-bold text-base ${
-									formik.isValid
-										? "bg-primaryColor-100 cursor-pointer"
-										: "cursor-not-allowed bg-primary/60"
-								}`}
-								disabled={
-									encryptedMutation?.isLoading ||
-									!formik.isValid ||
-									paystackMutation?.isLoading
-								}
-								// onClick={handleFormSubmit}
-							>
-								{encryptedMutation?.isLoading || paystackMutation?.isLoading ? (
-									<ClipLoader color='#d4d3d3' size={20} />
-								) : (
-									"Place Order"
-								)}
-							</button>
+							{selectedPaymentChannel === "alliance_pay" ? (
+								<button
+									type='button'
+									onClick={() => formik.handleSubmit()}
+									className={`flex w-full justify-center items-center py-2 sm:py-3 px-14 mt-2 sm:mt-4 rounded-md text-white transition font-bold text-base ${
+										formik.isValid
+											? "bg-primaryColor-100 cursor-pointer"
+											: "cursor-not-allowed bg-primary/60"
+									}`}
+									disabled={
+										encryptedMutation?.isLoading ||
+										!formik.isValid ||
+										paystackMutation?.isLoading
+									}
+									// onClick={handleFormSubmit}
+								>
+									{encryptedMutation?.isLoading ||
+									paystackMutation?.isLoading ? (
+										<ClipLoader color='#d4d3d3' size={20} />
+									) : (
+										"Place Order"
+									)}
+								</button>
+							) : // handlePaystackPayment(formik?.values)
+							null}
 						</div>
 					</div>
 				</Form>
