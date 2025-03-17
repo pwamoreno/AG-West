@@ -6,7 +6,6 @@ import {
 	cardPaymentFormModel,
 	checkoutFormModel,
 } from "@src/components/config/models";
-import { PaystackButton } from "react-paystack";
 import { RadioGroup, Radio } from "@nextui-org/react";
 import { useAppSelector } from "@src/components/hooks";
 import useToken from "@src/components/hooks/useToken";
@@ -31,6 +30,8 @@ import { useMutation } from "react-query";
 import { ClipLoader } from "react-spinners";
 import { useCart } from "react-use-cart";
 import { PAYSTACK_PUBLIC_KEY, PAYSTACK_SECRET_KEY } from "@utils/lib/data";
+import dynamic from "@node_modules/next/dynamic";
+import PaystackPaymentButton from "@src/components/Payment/PaystackPaymentButton";
 
 interface SelectOption {
 	label: string;
@@ -44,7 +45,7 @@ interface PaymentFormValues {
 	cvv: string; // The CVV as a string
 }
 
-interface FormValues {
+export interface FormValues {
 	firstName: string;
 	lastName: string;
 	email?: string;
@@ -55,10 +56,16 @@ interface FormValues {
 	state?: string;
 }
 
+const PaystackButton = dynamic(
+	() => import("react-paystack").then((mod) => mod.PaystackButton),
+	{
+		ssr: false, // Prevents server-side rendering
+	},
+);
+
 const CheckoutInfoForm = () => {
 	const { token, email } = useToken();
 	const router = useRouter();
-	const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 	const [paystackLoading, setPaystackLoading] = useState(false);
 	const states: SelectOption[] = State.getStatesOfCountry("NG").map(
 		(state) => ({
@@ -155,7 +162,7 @@ const CheckoutInfoForm = () => {
 		customer_id: wc_customer_info?.id,
 		payment_method: "alliance-payment-card",
 		payment_method_title: "alliance-payment",
-		set_paid: false,
+		set_paid: true,
 		billing: {
 			first_name: wc_customer_info?.first_name,
 			last_name: wc_customer_info?.last_name,
@@ -388,75 +395,35 @@ const CheckoutInfoForm = () => {
 		}
 	};
 
-	const paystackMutation = useMutation(initializePaystackPayment, {
-		onMutate: () => {
-			setPaystackLoading(true); // Set loading to true when the mutation starts
-		},
-		onSuccess: (authorizationUrl: string) => {
-			setPaymentUrl(authorizationUrl); // Set the payment URL received from Paystack
-			setPaystackLoading(false); // Set loading to false once the URL is ready
-		},
-		onError: (error: any) => {
-			// console.error("Error initializing Paystack payment:", error);
-			FormToast({
-				message: error?.message,
-				success: false,
-			});
-			setPaystackLoading(false); // Reset loading state on error
-		},
-		onSettled: () => {
-			setPaystackLoading(false); // Always reset loading when mutation completes (success or error)
-		},
-	});
-
-	const handleSuccess = (response: any) => {
-		if (response.status === "success") {
-			createOrder(orderData);
-			FormToast({
-				message: "Payment successful!",
-				success: true,
-			});
-			emptyCart();
-			setPaymentUrl(null);
-			router.push("/");
-			// Handle post-payment success (e.g., API call to verify transaction)
-		}
-	};
-
-	const handleClose = () => {
-		FormToast({
-			message: "Payment was canceled",
-			success: false,
-		});
-	};
-
-	// const handlePaystackPayment = (values: FormValues) => {
-	// 	return (
-	// 		<PaystackButton
-	// 			email={values?.email ? values?.email : ""}
-	// 			amount={Math.round(convertedValue * 100)} // Amount in kobo
-	// 			currency={baseCurrency.code}
-	// 			publicKey={PAYSTACK_PUBLIC_KEY}
-	// 			text='Pay Now'
-	// 			onSuccess={handleSuccess}
-	// 			onClose={handleClose}
-	// 			className={`flex w-full justify-center items-center py-2 sm:py-3 px-14 mt-2 sm:mt-4 rounded-md text-white transition font-bold text-base ${
-	// 				formik.isValid
-	// 					? "bg-primaryColor-100 cursor-pointer"
-	// 					: "cursor-not-allowed bg-primary/60"
-	// 			}`}
-	// 		/>
-	// 	);
-	// };
+	// const paystackMutation = useMutation(initializePaystackPayment, {
+	// 	onMutate: () => {
+	// 		setPaystackLoading(true); // Set loading to true when the mutation starts
+	// 	},
+	// 	onSuccess: (authorizationUrl: string) => {
+	// 		setPaystackLoading(false); // Set loading to false once the URL is ready
+	// 	},
+	// 	onError: (error: any) => {
+	// 		// console.error("Error initializing Paystack payment:", error);
+	// 		FormToast({
+	// 			message: error?.message,
+	// 			success: false,
+	// 		});
+	// 		setPaystackLoading(false); // Reset loading state on error
+	// 	},
+	// 	onSettled: () => {
+	// 		setPaystackLoading(false); // Always reset loading when mutation completes (success or error)
+	// 	},
+	// });
 
 	const formik = useFormik({
 		initialValues: initialValues,
 		validationSchema: checkoutFormModel,
 		enableReinitialize: true,
 		onSubmit: async (values, { setSubmitting }) => {
-			setSubmitting(true);
-
-			await handleFormSubmit(values, setSubmitting);
+			if (selectedPaymentChannel === "alliance_pay") {
+				setSubmitting(true);
+				await handleFormSubmit(values, setSubmitting);
+			}
 
 			setSubmitting(false);
 		},
@@ -736,51 +703,25 @@ const CheckoutInfoForm = () => {
 									className={`flex w-full justify-center items-center py-2 sm:py-3 px-14 mt-2 sm:mt-4 rounded-md text-white transition font-bold text-base ${
 										formik.isValid
 											? "bg-primaryColor-100 cursor-pointer"
-											: "cursor-not-allowed bg-primary/60"
+											: "cursor-not-allowed bg-red-500/60"
 									}`}
-									disabled={
-										encryptedMutation?.isLoading ||
-										!formik.isValid ||
-										paystackMutation?.isLoading
-									}
+									disabled={encryptedMutation?.isLoading || !formik.isValid}
 									// onClick={handleFormSubmit}
 								>
-									{encryptedMutation?.isLoading ||
-									paystackMutation?.isLoading ? (
+									{encryptedMutation?.isLoading ? (
 										<ClipLoader color='#d4d3d3' size={20} />
 									) : (
-										"Place Order"
+										"Pay Now"
 									)}
 								</button>
-							) : // handlePaystackPayment(formik?.values)
-							null}
+							) : (
+								<PaystackPaymentButton formik={formik} />
+							)}
 						</div>
 					</div>
 				</Form>
 			</FormikProvider>
 
-			{paymentUrl && (
-				<div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-					<div className='bg-white rounded-md w-11/12 max-w-2xl p-4'>
-						<iframe
-							src={paymentUrl}
-							width='100%'
-							height='600px'
-							title='Paystack Payment'
-							className='rounded-md'
-						/>
-						<button
-							onClick={() => {
-								emptyCart();
-								setPaymentUrl(null);
-							}}
-							className='mt-4 bg-red-500 text-white py-1 px-4 rounded'
-						>
-							Close
-						</button>
-					</div>
-				</div>
-			)}
 			<SignupModal
 				isOpen={isModalOpen ? true : false}
 				onClose={handleCloseModal}
