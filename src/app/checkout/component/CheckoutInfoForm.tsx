@@ -6,7 +6,7 @@ import {
 	cardPaymentFormModel,
 	checkoutFormModel,
 } from "@src/components/config/models";
-import { RadioGroup, Radio } from "@nextui-org/react";
+import { RadioGroup } from "@headlessui/react";
 import { useAppSelector } from "@src/components/hooks";
 import useToken from "@src/components/hooks/useToken";
 import { useCreateOrder, useCustomer } from "@src/components/lib/woocommerce";
@@ -30,7 +30,6 @@ import { useMutation } from "react-query";
 import { ClipLoader } from "react-spinners";
 import { useCart } from "react-use-cart";
 import { PAYSTACK_PUBLIC_KEY, PAYSTACK_SECRET_KEY } from "@utils/lib/data";
-import dynamic from "@node_modules/next/dynamic";
 import PaystackPaymentButton from "@src/components/Payment/PaystackPaymentButton";
 
 interface SelectOption {
@@ -55,13 +54,6 @@ export interface FormValues {
 	city?: string;
 	state?: string;
 }
-
-const PaystackButton = dynamic(
-	() => import("react-paystack").then((mod) => mod.PaystackButton),
-	{
-		ssr: false, // Prevents server-side rendering
-	},
-);
 
 const CheckoutInfoForm = () => {
 	const { token, email } = useToken();
@@ -669,12 +661,41 @@ const CheckoutInfoForm = () => {
 							</h5>
 							<RadioGroup
 								value={selectedPaymentChannel}
-								onChange={(e) => setSelectedPaymentChannel(e.target.value)}
+								onChange={setSelectedPaymentChannel}
 								className='font-semibold'
-								orientation='horizontal'
 							>
-								<Radio value='alliance_pay'>Alliancepay</Radio>
-								<Radio value='paystack'>Paystack</Radio>
+								<div className='flex space-x-4'>
+									{[
+										{ id: "alliance_pay", label: "Alliancepay" },
+										{ id: "paystack", label: "Paystack" },
+									].map((option) => (
+										<RadioGroup.Option
+											key={option.id}
+											value={option.id}
+											className='flex items-center space-x-2 cursor-pointer'
+										>
+											{({ checked }) => (
+												<>
+													<input
+														type='radio'
+														checked={checked}
+														className='h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500 cursor-pointer'
+														readOnly
+													/>
+													<span
+														className={
+															checked
+																? "text-blue-600 font-bold"
+																: "text-gray-800"
+														}
+													>
+														{option.label}
+													</span>
+												</>
+											)}
+										</RadioGroup.Option>
+									))}
+								</div>
 							</RadioGroup>
 						</div>
 						<div className=''>

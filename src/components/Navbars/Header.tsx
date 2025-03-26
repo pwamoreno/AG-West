@@ -10,6 +10,7 @@ import {
 	DropdownItem,
 	DropdownMenu,
 	DropdownTrigger,
+	Tooltip,
 } from "@nextui-org/react";
 import { useMutation } from "react-query";
 import Link from "next/link";
@@ -328,14 +329,6 @@ const Header = () => {
 						</div>
 
 						<div className='flex items-center gap-2'>
-							{/* <Tooltip content='Change Base Currency' placement='top'>
-										<button
-											onClick={onOpenBaseCurrency}
-											className='bg-white border border-primaryColor-100 hover:bg-black cursor-pointer transition-[.4] group text-primaryColor-100 text-lg group-hover:text-white rounded-full size-8'
-										>
-											{baseCurrency?.symbol}
-										</button>
-									</Tooltip> */}
 							<Dropdown>
 								<DropdownTrigger className=''>
 									<button

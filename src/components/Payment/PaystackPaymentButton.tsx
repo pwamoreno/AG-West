@@ -11,6 +11,7 @@ import { filterCustomersByEmail } from "@constants";
 import useToken from "../hooks/useToken";
 import { useAppSelector } from "../hooks";
 import { FormikProps } from "formik";
+import { websiteName } from "../../../constants/seoContants";
 
 // Dynamically import PaystackButton to prevent SSR issues
 const PaystackButton = dynamic(
@@ -95,6 +96,7 @@ const PaystackPaymentButton = ({ formik }: PaystackPaymentButtonProps) => {
 			currency={baseCurrency.code}
 			publicKey={PAYSTACK_PUBLIC_KEY}
 			text='Pay Now'
+			label={websiteName}
 			onSuccess={handleSuccess}
 			disabled={!formik.isValid}
 			onClose={handleClose}

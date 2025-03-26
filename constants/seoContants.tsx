@@ -1,5 +1,5 @@
 const websiteUrl = "https://trendhive.com";
-const websiteName = "Trendhive";
+export const websiteName = "Trendhive";
 export const SEODATA = {
 	defaultOGImage: `/images/trendhive-mini-logo.png`,
 	default: {

@@ -138,13 +138,12 @@ const SortedProducts = () => {
 						<div key={category?.id} className='space-y-4'>
 							<div className='w-full items-center flex justify-between sm:px-2'>
 								<Link
-									href='/category/id'
-									// href={`${
-									// 	"/category/" +
-									// 	convertToSlug(category?.name) +
-									// 	"-" +
-									// 	category?.id
-									// 	}`}
+									href={`${
+										"/category/" +
+										convertToSlug(category?.name) +
+										"-" +
+										category?.id
+									}`}
 									onClick={() =>
 										handleCategoryClick(category?.name, category?.id)
 									}
@@ -154,20 +153,12 @@ const SortedProducts = () => {
 									className='text-lg sm:text-xl md:text-2xl w-4/5 font-medium tracking-tight text-black line-clamp-2'
 								/>
 								<Link
-									// href={`${
-									// 	"/category/" +
-									// 	convertToSlug(category?.name) +
-									// 	"-" +
-									// 	category?.id
-									// 	}`}
-
-									href='/category/id'
-									// href={`${
-									// 	"/category/" +
-									// 	convertToSlug(category?.name) +
-									// 	"-" +
-									// 	category?.id
-									// 	}`}
+									href={`${
+										"/category/" +
+										convertToSlug(category?.name) +
+										"-" +
+										category?.id
+									}`}
 									onClick={() =>
 										handleCategoryClick(category?.name, category?.id)
 									}

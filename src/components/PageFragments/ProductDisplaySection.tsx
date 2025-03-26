@@ -127,8 +127,22 @@ const ProductDisplaySection = ({ FormatedId }: ProductDisplaySectionProps) => {
 											{Product?.name}
 										</h4>
 										<div className='flex items-center'>
-											<button className='bg-[#4CD964] text-white px-2 py-1 text-xs rounded-3xl'>
-												In stock
+											<button
+												className={`${
+													Product?.stock_status === "instock"
+														? "bg-green-100"
+														: Product?.stock_status === "outofstock"
+														? "bg-red-500"
+														: "bg-black"
+												}  text-white px-2 py-1 text-xs rounded-3xl`}
+											>
+												{Product?.stock_status === "instock"
+													? "In Stock"
+													: Product?.stock_status === "outofstock"
+													? "Out of Stock"
+													: Product?.stock_status === "onbackorder"
+													? "On Back Order"
+													: ""}
 											</button>
 										</div>
 									</div>
@@ -192,7 +206,7 @@ const ProductDisplaySection = ({ FormatedId }: ProductDisplaySectionProps) => {
 											</button>
 										)}
 										<div className='flex gap-2 flex-col sm:flex-row sm:items-center'>
-											<span className='font-outfit text-[10px] lg:text-xs text-primaryColor-100 font-normal text-primary-100'>
+											<span className='font-outfit text-[10px] lg:text-xs text-primaryColor-100 font-normal'>
 												Share
 											</span>
 											<div className='flex flex-wrap items-center gap-3 w-full'>
