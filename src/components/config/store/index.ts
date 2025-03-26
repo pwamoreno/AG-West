@@ -5,7 +5,6 @@ import paylaterModal4 from "../features/paylaterModal4";
 import payLaterDataState from "../features/payLaterDataState";
 import searchDataState from "../features/searchDataState";
 import userDetails from "../features/userDetails";
-import subCategoryId from "../features/subCategoryId";
 import paylaterPlanModal from "../features/paylaterPlanModal";
 import cartSlice from "../features/cartSlice";
 import { api } from "../features/api";
@@ -21,7 +20,6 @@ const rootReducer = {
 	paylaterPlanModal,
 	cartSlice,
 	searchDataState,
-	subCategoryId,
 };
 
 export const store = configureStore({

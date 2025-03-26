@@ -5,6 +5,7 @@ import { RootState } from "../config/store";
 import Picture from "../picture/Picture";
 import Link from "next/link";
 import { convertToSlug } from "@constants";
+import { useAppSelector } from "../hooks";
 
 interface SubCategoryCardProps {
 	id?: string;
@@ -12,7 +13,7 @@ interface SubCategoryCardProps {
 	name: string;
 }
 const SubCategoryCard = ({ id, image, name }: SubCategoryCardProps) => {
-	const { data } = useSelector((state: RootState) => state.subCategoryId);
+	const { data } = useAppSelector((state) => state.subCategoryId);
 
 	return (
 		<Link
