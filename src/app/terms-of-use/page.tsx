@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import AppLayout from "@src/components/AppLayout";
 import { useSearchParams } from "next/navigation";
 import { CompanyName } from "@constants";
+import RefundPolicy from "./_components/RefundPolicy";
 
 const Page = () => {
 	const searchParams = useSearchParams().toString();
@@ -16,6 +17,8 @@ const Page = () => {
 			setActiveTab("privacyPolicy");
 		} else if (search === "delivery-return") {
 			setActiveTab("deliveryReturn");
+		} else if (search === "refund-policy") {
+			setActiveTab("refundPolicy");
 		}
 	}, [search]);
 
@@ -68,6 +71,16 @@ const Page = () => {
 							onClick={() => handleTabClick("deliveryReturn")}
 						>
 							Delivery & Return
+						</button>
+						<button
+							className={`px-2 xl:px-4 py-2 rounded-md ${
+								activeTab === "refundPolicy"
+									? "bg-white text-black"
+									: "bg-[#F5F5F5] text-[#667085]"
+							}`}
+							onClick={() => handleTabClick("refundPolicy")}
+						>
+							Refund Policy
 						</button>
 					</div>
 				</section>
@@ -181,6 +194,7 @@ const Page = () => {
 							</p>
 						</div>
 					)}
+					{activeTab === "refundPolicy" && <RefundPolicy />}
 				</div>
 			</main>
 		</AppLayout>

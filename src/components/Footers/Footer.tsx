@@ -103,6 +103,7 @@ const Footer = () => {
 				{ label: "Terms of Use", href: "/terms-of-use?terms-of-use" },
 				{ label: "Privacy Policy", href: "/terms-of-use?privacy-policy" },
 				{ label: "Delivery & Return", href: "/terms-of-use?delivery-return" },
+				{ label: "Refund Policy", href: "/terms-of-use?refund-policy" },
 			],
 		},
 	];

@@ -7,7 +7,7 @@ import LoadingBar, { LoadingBarRef } from "react-top-loading-bar";
 import { ToastContainer } from "react-toastify";
 import * as _redux from "../../components/set-up";
 import axios from "axios";
-import { NextUIProvider } from "@node_modules/@nextui-org/system/dist";
+import { NextUIProvider } from "@nextui-org/react";
 import newStore from "../set-up/redux/store";
 
 _redux.setupAxios(axios, newStore);

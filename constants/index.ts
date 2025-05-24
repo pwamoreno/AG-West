@@ -1152,6 +1152,8 @@ export const formatAmountToCurrency = (amount: number) => {
 	}).format(amount);
 };
 
+export const ReturnPolicyDay = "5";
+
 export const currencyOptions: {
 	code: string;
 	label: string;
