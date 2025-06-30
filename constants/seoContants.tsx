@@ -1,7 +1,7 @@
-const websiteUrl = "https://trendhive.com";
-export const websiteName = "Trendhive";
+const websiteUrl = "https://www.duply.com.ng/";
+export const websiteName = "Duply";
 export const SEODATA = {
-	defaultOGImage: `/images/trendhive-mini-logo.png`,
+	defaultOGImage: `https://www.duply.com.ng/_next/static/media/duply-logo.6c861d97.png`,
 	default: {
 		title: websiteName,
 		description: `This is ${websiteName}`,
