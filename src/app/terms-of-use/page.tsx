@@ -4,6 +4,7 @@ import AppLayout from "@src/components/AppLayout";
 import { useSearchParams } from "next/navigation";
 import { CompanyName } from "@constants";
 import RefundPolicy from "./_components/RefundPolicy";
+import DeliveryReturn from "./_components/DeliveryReturn";
 
 const Page = () => {
 	const searchParams = useSearchParams().toString();
@@ -29,7 +30,7 @@ const Page = () => {
 	return (
 		<AppLayout>
 			<main className='bg-white mx-auto mt-32 pb-24'>
-				<section className='flex w-full flex-col items-center pt-8 xl:pt-16 gap-2 sm:gap-3 px-4 sm:px-8 md:px-16 text-center'>
+				<section className='flex w-full flex-col items-center pt-8 xl:pt-16 gap-2 sm:gap-3 px-2 sm:px-8 md:px-16 text-center'>
 					<h4 className='text-black text-base sm:text-xl font-semibold leading-[120%]'>
 						Our Policies
 					</h4>
@@ -84,28 +85,65 @@ const Page = () => {
 						</button>
 					</div>
 				</section>
-				<div className='flex mx-auto w-full mt-4 md:mt-8 text-base leading-[155%] px-5 sm:px-0 sm:max-w-xl slg:max-w-2xl pb-20'>
+				<div className='flex mx-auto w-full mt-4 md:mt-8 text-base leading-[155%] px-2 sm:px-0 sm:max-w-xl slg:max-w-2xl pb-20'>
 					{activeTab === "termsOfUse" && (
 						<div id='termsOfUse' className='text-[#667085]'>
 							<h4 className='text-base sm:text-xl xl:text-2xl font-semibold text-black capitalize'>
-								Our Terms
+								Terms of Use
 							</h4>
+
 							<p className='mt-2 leading-[1.8] text-xs md:text-sm xl:text-base'>
-								By using our buy now pay later installment service, you agree to
-								the following terms and conditions: You must be at least 18
-								years old to use our service. You must have a valid bank account
-								or credit/debit card to set up your repayment payment plan.
-								Complete compliance with our KYC, including valid means of ID
-								and one guarantor. You agree to pay the amount specified in your
-								payment plan as at when due.
+								By using our website and services, you agree to the following
+								terms and conditions:
 							</p>
+
+							<ul className='list-disc pl-5 mt-2 space-y-2 text-xs md:text-sm xl:text-base'>
+								<li>
+									<span className='font-medium'>Eligibility:</span> You must be
+									at least 18 years old to make purchases on our platform.
+								</li>
+								<li>
+									<span className='font-medium'>Account Security:</span> You are
+									responsible for maintaining the confidentiality of your
+									account credentials and all activities under your account.
+								</li>
+								<li>
+									<span className='font-medium'>Payment Terms:</span> All
+									purchases require full payment at checkout. We accept major
+									credit/debit cards and bank transfers.
+								</li>
+								<li>
+									<span className='font-medium'>Order Processing:</span> Orders
+									are processed within 1-2 business days. Delivery timelines
+									begin once payment is confirmed.
+								</li>
+								<li>
+									<span className='font-medium'>Pricing:</span> All prices are
+									in Naira (₦) and inclusive of VAT where applicable. We reserve
+									the right to adjust prices without prior notice.
+								</li>
+								<li>
+									<span className='font-medium'>Product Availability:</span> All
+									items are subject to availability. We may cancel orders for
+									unavailable items and issue refunds.
+								</li>
+								<li>
+									<span className='font-medium'>Returns:</span> Please refer to
+									our Return Policy for details on eligible returns and refunds.
+								</li>
+							</ul>
+
+							<p className='mt-4 leading-[1.8] text-xs md:text-sm xl:text-base'>
+								<span className='font-medium'>Payment Issues:</span> We are not
+								responsible for payments declined by your bank or payment
+								provider. Please contact your financial institution for
+								resolution.
+							</p>
+
 							<p className='mt-2 leading-[1.8] text-xs md:text-sm xl:text-base'>
-								Failure to make a payment as at when due attracts a penalty of
-								10%. We do not take responsibility for payment failed or
-								declined by the third party. Kindly contact you bank for
-								declined or failed payment. We reserve the right to repossess
-								the items financed after two consecutive failed payments
-								according to the payment plan.
+								<span className='font-medium'>Policy Changes:</span> We reserve
+								the right to modify these terms at any time. Continued use of
+								our services constitutes acceptance of the updated terms.
 							</p>
 						</div>
 					)}
@@ -184,16 +222,7 @@ const Page = () => {
 							</p>
 						</div>
 					)}
-					{activeTab === "deliveryReturn" && (
-						<div className='text-[#667085]'>
-							<p className='mt-2 leading-[1.8] text-xs md:text-sm xl:text-base'>
-								We want to emphasize that we do not assume responsibility for
-								damaged goods after use. We also do not take responsibility for
-								damage products after delivery has been confirmed. Our policy
-								includes replacement of factory-defective products.
-							</p>
-						</div>
-					)}
+					{activeTab === "deliveryReturn" && <DeliveryReturn />}
 					{activeTab === "refundPolicy" && <RefundPolicy />}
 				</div>
 			</main>

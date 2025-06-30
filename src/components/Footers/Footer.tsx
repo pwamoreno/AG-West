@@ -34,7 +34,7 @@ const Footer = () => {
 			icon: (
 				<Iconbi.BiLogoFacebook className='text-lg sm:text-2xl text-white' />
 			),
-			link: "http://facebook.com/5linxmart/",
+			link: "http://facebook.com/duply/",
 			backgroundColor: "bg-[#365493]",
 		},
 		// {
@@ -48,7 +48,7 @@ const Footer = () => {
 			icon: (
 				<Iconbi.BiLogoLinkedin className='text-lg sm:text-2xl text-white' />
 			),
-			link: "http://instagram.com/trendhive/",
+			link: "http://instagram.com/duply/",
 			backgroundColor: "bg-[#0274B3]",
 		},
 	];
@@ -102,7 +102,7 @@ const Footer = () => {
 			links: [
 				{ label: "Terms of Use", href: "/terms-of-use?terms-of-use" },
 				{ label: "Privacy Policy", href: "/terms-of-use?privacy-policy" },
-				{ label: "Delivery & Return", href: "/terms-of-use?delivery-return" },
+				{ label: "Delivery & Shipping", href: "/terms-of-use?delivery-return" },
 				{ label: "Refund Policy", href: "/terms-of-use?refund-policy" },
 			],
 		},

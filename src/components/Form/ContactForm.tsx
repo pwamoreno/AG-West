@@ -60,12 +60,7 @@ const ContactForm = () => {
 		document.body.appendChild(form); // Append the form to the document body
 
 		emailjs
-			.sendForm(
-				"5linxmart_mail_service",
-				"template_84orhgd",
-				form,
-				"7ZmItk0ETameADS5w",
-			)
+			.sendForm("mail_service", "template_84orhgd", form, "7ZmItk0ETameADS5w")
 			.then((res) => {
 				// console.log("success! " + res.status);
 				formik.resetForm();

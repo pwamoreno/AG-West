@@ -306,7 +306,7 @@ const CostCalculationSection = () => {
 									>
 										terms & conditions
 									</span>{" "}
-									of 5linxmart.com
+									of duply.com.ng
 								</span>
 							</label>
 						</div>

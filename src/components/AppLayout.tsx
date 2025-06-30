@@ -11,7 +11,7 @@ const AppLayout = ({ children, className }: AppLayoutProps) => {
 	return (
 		<main className={`relative`}>
 			<Header />
-			<div className={`min-h-screen px-3 sm:px-4 md:px-0 ${className}`}>
+			<div className={`min-h-screen px-2 sm:px-4 md:px-0 ${className}`}>
 				{children}
 			</div>
 			<Footer />
