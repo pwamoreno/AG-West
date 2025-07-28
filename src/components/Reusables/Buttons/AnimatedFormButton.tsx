@@ -35,7 +35,7 @@ const AnimatedFormButton = ({
 		type: "spring", // Change to 'tween' for a linear transition
 		damping: 10, // Adjust the damping for the spring effect (higher value = less bounce)
 		stiffness: 100, // Adjust the stiffness for the spring effect (higher value = more bounce)
-		// duration: 0.2,
+		duration: 0.2,
 	};
 
 	useEffect(() => {
