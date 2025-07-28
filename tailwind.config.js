@@ -18,7 +18,7 @@ export const theme = {
 				100: "#FDF7FD",
 				200: "#CCCCCC",
 			},
-			primary: "#28CB6D",
+			primary: "#FFA500",
 			effect: "#E2C8C4",
 			primaryColor: {
 				100: "#9BCB14",
