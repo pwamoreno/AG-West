@@ -4,7 +4,7 @@ import { Select, SelectItem, Button } from "@nextui-org/react";
 import { useAppDispatch, useAppSelector } from "../hooks";
 import { setBaseCurrency, setExchangeRate } from "../Redux/Currency";
 import { useMutation } from "react-query";
-import { ImSpinner2 } from "@node_modules/react-icons/im";
+import { ImSpinner2 } from "react-icons/im";
 import { APICall } from "@utils";
 import { currencyOptions } from "@constants";
 import { fetchExchangeRate } from "@utils/endpoints";
