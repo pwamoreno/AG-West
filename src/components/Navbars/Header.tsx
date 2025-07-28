@@ -33,7 +33,7 @@ import { currencyOptions, filterCustomersByEmail } from "@constants";
 import { ImSpinner2 } from "react-icons/im";
 import { LogoImage } from "@utils/function";
 import BaseCurrency from "../Reusables/BaseCurrency";
-import { useDisclosure } from "@nextui-org/use-disclosure/dist";
+import { useDisclosure } from "@nextui-org/use-disclosure";
 import { Modal, ModalContent } from "@nextui-org/react";
 import { setBaseCurrency, setExchangeRate } from "../Redux/Currency";
 import { fetchExchangeRate } from "@utils/endpoints";
