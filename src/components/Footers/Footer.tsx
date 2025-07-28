@@ -127,7 +127,7 @@ const Footer = () => {
         <section className="flex justify-center gap-16 mt-2">
           <div className="flex flex-col gap-4 w-[80%]">
             <LogoImage className="rounded-sm" />
-            <span className="text-secondary-300 text-base leading-[1.6] font-[400]">
+            <span className="text-black text-base leading-[1.6] font-[400]">
               The best store for you!
             </span>
 
