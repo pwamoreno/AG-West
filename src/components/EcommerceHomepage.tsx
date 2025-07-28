@@ -101,7 +101,7 @@ const EcommerceHomepage: React.FC = () => {
             <div className="flex justify-center max-md:hidden items-center space-x-8">
               {[
                 "NEW ARRIVAL",
-                "MOST PICKED",
+                // "MOST PICKED",
                 "SHOP",
                 // 'WOMEN',
                 // 'MEN',
