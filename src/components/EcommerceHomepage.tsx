@@ -126,7 +126,7 @@ const EcommerceHomepage: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl max-md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-md:max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex max-md:flex-col lg:grid-cols-2 gap-6 h-auto lg:h-[600px]">
           {/* Winter Arrival - Large Card */}
           <CategoryCard
