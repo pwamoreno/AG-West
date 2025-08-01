@@ -37,7 +37,7 @@ const HomeCard = ({ id, image, name }: HomeCardProps) => {
       />
 
       <div className="absolute bottom-4 left-4">
-        <span className="bg-white px-4 py-2 rounded-lg text-xs text-gray-900 shadow-md">
+        <span className="bg-primary px-4 py-2 rounded-lg text-xs text-white shadow-md">
           {name}
         </span>
       </div>

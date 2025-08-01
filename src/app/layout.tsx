@@ -9,35 +9,35 @@ import { SEODATA } from "@constants/seoContants";
 import { Metadata } from "next";
 
 const inter = Inter({
-	subsets: ["latin-ext"],
-	weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-	style: ["normal"],
+  subsets: ["latin-ext"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  style: ["normal"],
 });
 
 const { description, title } = SEODATA.default;
 export const metadata: Metadata = {
-	title: title,
-	description: description,
-	icons: SEODATA.defaultOGImage,
-	openGraph: {
-		images: [
-			{
-				url: SEODATA.defaultOGImage,
-			},
-		],
-	},
+  title: title,
+  description: description,
+  icons: SEODATA.defaultOGImage,
+  openGraph: {
+    images: [
+      {
+        url: SEODATA.defaultOGImage,
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	return (
-		<html lang='en'>
-			<body className={`${inter.className} w-full min-h-screen`}>
-				<AppProvider>{children}</AppProvider>
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en">
+      <body className={`${inter.className} w-full min-h-screen`}>
+        <AppProvider>{children}</AppProvider>
+      </body>
+    </html>
+  );
 }
